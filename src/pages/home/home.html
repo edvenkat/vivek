@@ -1,0 +1,208 @@
+<ion-header color="secondary">
+    <ion-navbar>
+            <ion-title class="site_color">
+                Lyrics In Tamil
+            </ion-title>
+            <ion-buttons right>
+                <button ion-button icon-only menuToggle>
+                    <ion-icon name='menu'></ion-icon>
+                </button>
+            </ion-buttons>
+        </ion-navbar>
+    <ion-row class="filters">
+        <ion-col class="col-with-arrow"  no-padding col-1 (click)="slidePrev()"> 
+            <ion-icon *ngIf="showLeftButton" name="arrow-back"></ion-icon>
+        </ion-col>
+        <ion-col no-padding col-10>
+            <ion-slides #mySliderH slidesPerView="3" (ionSlideDidChange)="onHeaderSlideChanged($event)">
+                <ion-slide (click)="onSegmentChanged(category)" *ngFor="let category of slidersHeader">  
+                    <p [class.selected]="selectedSegment?.id === category.id">{{ category.title }}</p>
+                </ion-slide>
+            </ion-slides>
+        </ion-col>
+        <ion-col class="col-with-arrow"  no-padding col-1 (click)="slideNext()" >
+            <ion-icon *ngIf="showRightButton" name="arrow-forward"></ion-icon>
+        </ion-col>
+    </ion-row>
+</ion-header>
+<ion-content padding>
+    <ion-slides #mySliderC  (ionSlideDidChange)="onContentSlideChanged($event)" (ionSlideWillChange)="scrollToTop($event)">
+        <ion-slide *ngFor="let slide of slidersContent">
+            <ng-container *ngIf="slide.sliderName==='Home'">
+                <ion-card *ngFor="let song of homeSongList" (click)="goToPage('details')">
+                    <img src="{{song.songImage}}" style="width:100%"/>
+                    <ion-card-content>
+                        <ion-card-title>
+                            {{song.songTitle}}
+                        </ion-card-title>
+                        <p>
+                             {{song.songCreated}}
+                        </p>
+                    </ion-card-content>
+                    <ion-row no-padding>
+                        <ion-col text-center>
+                            <button ion-button clear small color="danger" icon-start>
+                                <ion-icon name='ios-eye'></ion-icon>
+                                    {{song.songView}} Views
+                            </button>
+                        </ion-col>
+                        <ion-col text-right>
+                            <button ion-button clear small color="danger" icon-start>
+                                <ion-icon name='ios-chatboxes'></ion-icon>
+                                {{song.songComments}} comments
+                            </button>
+                        </ion-col>
+                    </ion-row>
+                </ion-card>
+                <ion-row no-padding>
+                    <div (click)="getMoreSongs()" class="more_song_button">More Song</div>
+                </ion-row>
+            </ng-container>
+            <ng-container *ngIf="slide.sliderName==='Trending'">
+               <ion-list *ngFor="let trend of trendingSongList" (click)="goToPage('details')">
+                    <ion-item no-lines class="bottom-border">
+                        <ion-avatar item-start>
+                            <img src="{{trend.songImage}}">
+                        </ion-avatar>
+                        <h2 text-wrap>{{trend.songTitle}}</h2>
+                        <!-- <p>Ugh. As if.</p> -->
+                    </ion-item>
+                </ion-list>
+            </ng-container>
+            
+            <ng-container *ngIf="slide.sliderName==='Favourite'">
+               <ion-list *ngFor="let fav of favouriteSongList" (click)="goToPage('details')">
+                    <ion-item no-lines class="bottom-border">
+                        <ion-avatar item-start>
+                            <img src="{{fav.songImage}}">
+                        </ion-avatar>
+                        <h2 text-wrap>{{fav.songTitle}}</h2>
+                        <p>{{fav.songView}} Views</p>
+                    </ion-item>
+                </ion-list>
+            </ng-container>
+            
+            <ng-container *ngIf="slide.sliderName==='Actor'">
+                <ion-card>
+                  <ion-card-header style="font-weight:bold;text-align:left">
+                      {{slide.sliderName}}
+                  </ion-card-header>
+                  <ion-list>
+                    <button ion-item *ngFor="let song of actorList" (click)="goToPage('list')">
+                       {{song.name}}
+                    </button>
+                  </ion-list>
+                </ion-card>
+            </ng-container>
+            
+            <ng-container *ngIf="slide.sliderName==='Actress'">
+                <ion-card>
+                  <ion-card-header style="font-weight:bold;text-align:left">
+                      {{slide.sliderName}}
+                  </ion-card-header>
+                  <ion-list>
+                    <button ion-item *ngFor="let song of actressList" (click)="goToPage('list')">
+                       {{song.name}}
+                    </button>
+                  </ion-list>
+                </ion-card>
+            </ng-container>
+            
+            <ng-container *ngIf="slide.sliderName==='Movie'">
+                <ion-card>
+                  <ion-card-header style="font-weight:bold;text-align:left">
+                      {{slide.sliderName}}
+                  </ion-card-header>
+                  <ion-list>
+                    <button ion-item *ngFor="let song of movieList" (click)="goToPage('list')">
+                       {{song.name}}
+                    </button>
+                  </ion-list>
+                </ion-card>
+            </ng-container>
+            
+            <ng-container *ngIf="slide.sliderName==='Music'">
+                <ion-card>
+                  <ion-card-header style="font-weight:bold;text-align:left">
+                      {{slide.sliderName}}
+                  </ion-card-header>
+                  <ion-list>
+                    <button ion-item *ngFor="let song of musicList" (click)="goToPage('list')">
+                       {{song.name}}
+                    </button>
+                  </ion-list>
+                </ion-card>
+            </ng-container>
+            
+            <ng-container *ngIf="slide.sliderName==='Lyricist'">
+                <ion-card>
+                  <ion-card-header style="font-weight:bold;text-align:left">
+                      {{slide.sliderName}}
+                  </ion-card-header>
+                  <ion-list>
+                    <button ion-item *ngFor="let song of lyricistList" (click)="goToPage('list')">
+                       {{song.name}}
+                    </button>
+                  </ion-list>
+                </ion-card>
+            </ng-container>
+            
+            
+            <ng-container *ngIf="slide.sliderName==='Singer'">
+                <ion-card>
+                  <ion-card-header style="font-weight:bold;text-align:left">
+                      {{slide.sliderName}}
+                  </ion-card-header>
+                  <ion-list>
+                    <button ion-item *ngFor="let song of singerList" (click)="goToPage('list')">
+                       {{song.name}}
+                    </button>
+                  </ion-list>
+                </ion-card>
+            </ng-container>
+            
+            
+            <ng-container *ngIf="slide.sliderName==='Album Songs'">
+                <ion-card *ngFor="let song of albumSongList" (click)="goToPage('details')">
+                    <img src="{{song.songImage}}" style="width:100%"/>
+                    <ion-card-content>
+                        <ion-card-title>
+                            {{song.songTitle}}
+                        </ion-card-title>
+                        <p>
+                             {{song.songCreated}}
+                        </p>
+                    </ion-card-content>
+                    <ion-row no-padding>
+                        <ion-col text-center>
+                            <button ion-button clear small color="danger" icon-start>
+                                <ion-icon name='ios-eye'></ion-icon>
+                                    {{song.songView}} Views
+                            </button>
+                        </ion-col>
+                        <ion-col text-right>
+                            <button ion-button clear small color="danger" icon-start>
+                                <ion-icon name='ios-chatboxes'></ion-icon>
+                                {{song.songComments}} comments
+                            </button>
+                        </ion-col>
+                    </ion-row>
+                </ion-card>
+            </ng-container>
+            
+        </ion-slide>
+    </ion-slides>
+    <ion-fab right bottom class="social_share" (click)="fabMenuToggle()" #fab>
+        <button ion-fab color="secondary"><ion-icon name="arrow-dropup" ></ion-icon></button>
+        <ion-fab-list side="top">
+            <button ion-fab class="our-logo-facebook" (click)="redirectionPage('facebook',fab)"><ion-icon name="logo-facebook"></ion-icon></button>
+            <button ion-fab class="our-logo-twitter" (click)="redirectionPage('twitter',fab)"><ion-icon name="logo-twitter"></ion-icon></button>
+            <button ion-fab class="our-logo-youtube" (click)="redirectionPage('youtube',fab)"><ion-icon name="logo-youtube"></ion-icon></button>
+            <button ion-fab class="our-logo-googleplus" (click)="redirectionPage('googleplus',fab)"><ion-icon name="logo-googleplus"></ion-icon></button>
+        </ion-fab-list>
+    </ion-fab>
+     <ion-fab right bottom>
+        <button ion-fab color="secondary" (click)="getSearch(fab)"><ion-icon name="ios-search"></ion-icon></button>
+    </ion-fab>
+</ion-content>
+<div class="fab-menu-overlay" [class.active]="fabMenuActive" (click)="claseFabMenu(fab)"></div>
